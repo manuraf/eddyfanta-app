@@ -1,0 +1,82 @@
+<div class="container">
+  <div class="row" ng-show="formazione" ng-controller="schieraCtrl">
+    <div class="col-md-12">
+        <div class="panel panel-primary" >
+          <div class="panel-heading"> <h3 class="panel-title">Formazione</h3> </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div ng-show="msg" class="alert alert-success"> {{msg}} </div>
+    </div>
+
+    <div class="col-md-12 text-center">
+        <div class="panel panel-default">
+            <div class="panel-body">
+              <a ng-click="changeModulo(3,4,3)" class="btn btn-success">3-4-3</a>
+              <a ng-click="changeModulo(3,5,2)" class="btn btn-success">3-5-2</a>
+              <a ng-click="changeModulo(4,4,2)" class="btn btn-success">4-4-2</a>
+              <a ng-click="changeModulo(4,5,1)" class="btn btn-success">4-5-1</a>
+              <a ng-click="changeModulo(4,5,1)" class="btn btn-success">5-4-1</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+      <p class="lead">Titolari {{formazione.modulo}}</p>
+
+      <p ng-repeat="schieramento in formazione.giocatori | range:1:1">
+        <select  class="form-control" ng-model="formazione.giocatori[$index].giocatore"
+          ng-options="giocatore as giocatore.cognome+' '+giocatore.nome[0] for giocatore in playerOptions.portieri track by giocatore.id"></select>
+      </p>
+
+      <p ng-repeat="schieramento in formazione.giocatori | range:2:df">
+        <select class="form-control" ng-model="formazione.giocatori[$index+1].giocatore"
+          ng-options="giocatore as giocatore.cognome+' '+giocatore.nome[0] for giocatore in playerOptions.difensori track by giocatore.id"></select>
+      </p>
+
+      <p ng-repeat="schieramento in formazione.giocatori | range:df:cc">
+        <select class="form-control" ng-model="formazione.giocatori[$index+1+df].giocatore"
+          ng-options="giocatore as giocatore.cognome+' '+giocatore.nome[0] for giocatore in playerOptions.centrocampisti track by giocatore.id"></select>
+      </p>
+
+      <p ng-repeat="schieramento in formazione.giocatori | range:cc:at">
+        <select class="form-control" ng-model="formazione.giocatori[$index+1+df+cc].giocatore"
+          ng-options="giocatore as giocatore.cognome+' '+giocatore.nome[0] for giocatore in playerOptions.attaccanti track by giocatore.id"></select>
+      </p>
+
+    </div>
+
+    <div class="col-md-6">
+      <p class="lead">Riserve</p>
+
+      <p>
+        <select class="form-control" ng-model="formazione.giocatori[11].giocatore"
+          ng-options="giocatore as giocatore.cognome+' '+giocatore.nome[0] for giocatore in playerOptions.portieri track by giocatore.id"></select>
+      </p>
+
+      <p ng-repeat="schieramento in formazione.giocatori | range:12:2">
+        <select class="form-control" ng-model="formazione.giocatori[$index+12].giocatore"
+          ng-options="giocatore as giocatore.cognome+' '+giocatore.nome[0] for giocatore in playerOptions.difensori track by giocatore.id"></select>
+      </p>
+
+      <p ng-repeat="schieramento in formazione.giocatori | range:14:2">
+        <select class="form-control" ng-model="formazione.giocatori[$index+14].giocatore"
+          ng-options="giocatore as giocatore.cognome+' '+giocatore.nome[0] for giocatore in playerOptions.centrocampisti track by giocatore.id"></select>
+      </p>
+
+      <p ng-repeat="schieramento in formazione.giocatori | range:16:2">
+        <select class="form-control" ng-model="formazione.giocatori[$index+16].giocatore"
+          ng-options="giocatore as giocatore.cognome+' '+giocatore.nome[0] for giocatore in playerOptions.attaccanti track by giocatore.id"></select>
+      </p>
+
+
+    </div>
+
+    <div class="col-md-12 text-center">
+      <a ng-click="inviaFormazione(formazione)" class="btn btn-lg btn-info btn-block">Inserisci</a>
+    </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html ng-app="fantaCalcio">
+  <head>
+    <title>EddyFantacalcio</title>
+    <script src="angular.js"></script>
+    <script src="ngmodules/angular-route.js"></script>
+    <script src="ngmodules/angular-resource.js"></script>
+
+    <link href="bootstrap.css" rel="stylesheet" />
+    <link href="bootstrap-theme.css" rel="stylesheet" />
+
+      <link rel="stylesheet" href="style/autocomplete.css">
+
+      <script type="text/javascript" src="script/angucomplete.js"></script>
+
+
+    <!-- Bootstrap Core CSS -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Timeline CSS -->
+    <link href="dist/css/timeline.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS
+    <link href="../bower_components/morrisjs/morris.css" rel="stylesheet"> -->
+
+    <!-- Custom Fonts -->
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <script>
+      angular.module("fantaCalcio", ["ngRoute","customFilters","angucomplete"])
+      .config(function ($routeProvider) {
+        $routeProvider.when("/home", {
+          templateUrl: "/views/home.html"
+        });
+        $routeProvider.when("/generale", {
+          templateUrl: "/views/generale.html"
+        });
+        $routeProvider.when("/gironi-classifica", {
+          templateUrl: "/views/gironi/classifica.html"
+        });
+        $routeProvider.when("/gironi-formazioni", {
+          templateUrl: "/views/gironi/formazioni.html"
+        });
+        $routeProvider.when("/mercato", {
+          templateUrl: "/views/mercato.html"
+        });
+        $routeProvider.when("/squadre", {
+          templateUrl: "/views/admin/squadre.html"
+        });
+        $routeProvider.when("/login", {
+          templateUrl: "/views/login.html"
+        });
+        $routeProvider.when("/schiera", {
+          templateUrl: "/views/schiera.html"
+        });
+        $routeProvider.otherwise({
+            templateUrl: "/views/home.html"
+        });
+      })
+      .config(function ($httpProvider) {
+          $httpProvider.interceptors.push('authHttpRequestInterceptor');
+      })
+      .constant("loginUrl", "http://localhost:8080/eddyfantacalcio/auth/login")
+      .factory('authFactory', function ($rootScope, $http, loginUrl) {
+
+          var authFactory = {
+              authData: undefined
+          };
+
+          authFactory.logout = function () {
+              this.authData = undefined;
+              $rootScope.$broadcast('authChanged');
+          };
+
+          authFactory.login = function (user) {
+              return $http.post(loginUrl, user);
+          };
+
+          authFactory.setAuthData = function (authData) {
+            this.authData = {
+                authId: authData.authId,
+                authToken: authData.authToken,
+                authPermission: authData.authPermission
+            };
+            $rootScope.$broadcast('authChanged');
+          };
+
+          authFactory.getAuthData = function () {
+              return this.authData;
+          };
+
+          authFactory.isAuthenticated = function () {
+              return !angular.isUndefined(this.getAuthData());
+          };
+
+          return authFactory;
+      })
+      .factory('authHttpRequestInterceptor', function ($rootScope, $injector) {
+        var authHttpRequestInterceptor = {
+            request: function ($request) {
+                var authFactory = $injector.get('authFactory');
+                if (authFactory.isAuthenticated()) {
+                    $request.headers['auth-id'] = authFactory.getAuthData().authId;
+                    $request.headers['auth-token'] = authFactory.getAuthData().authToken;
+                }
+
+                return $request;
+            }
+        };
+
+        return authHttpRequestInterceptor;
+    });
+    </script>
+    <script src="controllers/squadreCtrl.js"></script>
+    <script src="controllers/generaleCtrl.js"></script>
+    <script src="controllers/loginCtrl.js"></script>
+    <script src="controllers/gironiCtrl.js"></script>
+    <script src="controllers/mercatoCtrl.js"></script>
+    <script src="controllers/homeCtrl.js"></script>
+    <script src="controllers/schieraCtrl.js"></script>
+    <script src="controllers/appCtrl.js"></script>
+    <script src="filters/range.js"></script>
+    <script src="directives/restrict.js"></script>
+
+
+
+    <body ng-controller="appCtrl">
+
+      <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#/home">eddyfantacalcio</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <a class="dropdown-toggle" href="#/home">
+                        <i class="fa fa-home fa-fw"></i> Home
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-toggle" data-toggle="dropdown" >
+                        <i class="fa fa-tasks fa-fw"></i> Gironi <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#/gironi-classifica"><i class="fa fa-user fa-fw"></i> Classifica</a>
+                        </li>
+                        <li><a href="#/gironi-formazioni"><i class="fa fa-user fa-fw"></i> Formazioni</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- /.dropdown -->
+                <li>
+                    <a class="dropdown-toggle" href="#/generale">
+                        <i class="fa fa-signal fa-fw"></i> Generale
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-toggle" href="#/mercato">
+                        <i class="fa fa-money fa-fw"></i> Mercato
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Statistiche
+                    </a>
+                </li>
+                <!-- /.dropdown -->
+                <li ng-show="isAuthenticated()">
+                    <a class="dropdown-toggle" data-toggle="dropdown" >
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> Profilo</a>
+                        </li>
+                        <li><a href="#/schiera"><i class="fa fa-gear fa-fw"></i> Schiera</a>
+                        </li>
+
+                        <!-- admin -->
+                        <li class="divider" ng-show="isAccessEnable(1)"></li>
+                        <li ng-show="isAccessEnable(1)">
+                          <a href="#/squadre"><i class="fa fa-user fa-fw" ></i> Squadre</a>
+                        </li>
+
+                        <li class="divider"></li>
+                        <li><a ng-click="logout()"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <li ng-show="!isAuthenticated()">
+                    <a class="dropdown-toggle" href="#/login" title="login">
+                        <i class="fa fa-user fa-fw"></i>
+                    </a>
+                    <!-- /.dropdown-login-->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+
+            <!-- /.navbar-static-side -->
+        </nav>
+
+      <ng-view />
+
+      <!-- jQuery -->
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

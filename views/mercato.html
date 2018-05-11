@@ -1,0 +1,166 @@
+<style>
+  form .ng-invalid.ng-dirty { background-color: lightpink; }
+  form .ng-valid.ng-dirty { background-color: lightgreen; }
+  span.summary.ng-invalid { color: red; font-weight: bold; }
+  span.summary.ng-valid { color: green; }
+</style>
+
+<div id="page-wrapper" ng-controller="mercatoCtrl">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Mercato</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+
+    <!-- /.row -->
+    <div class="row" >
+
+      <div class="col-md-8 text-center">
+          <div class="panel panel-default">
+              <div class="panel-body">
+                <p><a ng-repeat="competizione in competizioni" ng-click="getSquadre(competizione.id)"
+                  class="btn" ng-class="getCompetizioneClass(competizione)">{{competizione.nome}}</a></p>
+              </div>
+          </div>
+      </div>
+    </div>
+
+      <div class="col-md-2 text-center" ng-repeat="squadra in squadre">
+
+        <div class="panel panel-primary" >
+          <div class="panel-heading">
+            {{squadra.nome}}
+          </div>
+            <div class="panel-body">
+              <div ng-show="squadra.msg" class="alert alert-success"> {{squadra.msg}} </div>
+              <div class="table-responsive">
+                <form name="myForm_{{squadra.nome}}" ng-submit="salva(squadra)">
+                  <table class="table table-bordered table-hover">
+                      <thead>
+                          <tr>
+                              <th>Nome</th>
+                              <th>Quota</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+
+                        <tr ng-repeat="giocatore in squadra.portieri">
+                          <td>
+                            <a ng-click="elimina(squadra,$index)" ng-show="isAccessEnable(1)">x</a>
+                            {{giocatore.nome}} {{giocatore.cognome}}
+                          </td>
+                            <td><!--<input name="quota" ng-model="giocatore.quota"class="form-control" type="number" required>-->{{giocatore.quota}}</td>
+                        </tr>
+                          <tr ng-show="isAccessEnable(1)">
+                              <td>
+                                <angucomplete id="ex1"
+                                  placeholder="Search player"
+                                  pause="100"
+                                  selectedobject="squadra.newPortiere"
+                                  url="http://localhost:8080/eddyfantacalcio/giocatori/"
+                                  titlefield="nome,cognome"
+                                  minlength="3"
+                                  inputclass="form-control" />
+                              </td>
+                              <td>
+                                <input name="quota" ng-model="squadra.newPortiere.originalObject.quota"class="form-control" type="number">
+                                <a ng-click="inserisci(squadra,squadra.newPortiere,1)">x</a>
+                              </td>
+                          </tr>
+                          <!-- end PORTIERI -->
+                          <tr><td colspan="2"></td></tr>
+
+                          <tr ng-repeat="giocatore in squadra.difensori">
+                            <td>
+                              <a ng-click="elimina(squadra,$index)" ng-show="isAccessEnable(1)">x</a>
+                              {{giocatore.nome}} {{giocatore.cognome}}
+                            </td>
+                            <td>{{giocatore.quota}}</td>
+                          </tr>
+                          <tr ng-show="isAccessEnable(1)">
+                              <td>
+                                <angucomplete id="ex1"
+                                  placeholder="Search player"
+                                  pause="100"
+                                  selectedobject="squadra.newDifensore"
+                                  url="http://localhost:8080/eddyfantacalcio/giocatori/"
+                                  titlefield="nome,cognome"
+                                  minlength="3"
+                                  inputclass="form-control" />
+                              </td>
+                              <td>
+                                <input name="quota" ng-model="squadra.newDifensore.originalObject.quota"class="form-control" type="number">
+                                <a ng-click="inserisci(squadra,squadra.newDifensore,2)">V</a>
+                              </td>
+                          </tr>
+                          <!-- end DIFENSORI -->
+                          <tr><td colspan="2"></td></tr>
+
+                          <tr ng-repeat="giocatore in squadra.centrocampisti">
+                            <td>
+                              <a ng-click="elimina(squadra,$index)" ng-show="isAccessEnable(1)">x</a>
+                              {{giocatore.nome}} {{giocatore.cognome}}
+                            </td>
+                            <td>{{giocatore.quota}}</td>
+                          </tr>
+                          <tr ng-show="isAccessEnable(1)">
+                              <td>
+                                <angucomplete id="ex1"
+                                  placeholder="Search player"
+                                  pause="100"
+                                  selectedobject="squadra.newCentro"
+                                  url="http://localhost:8080/eddyfantacalcio/giocatori/"
+                                  titlefield="nome,cognome"
+                                  minlength="3"
+                                  inputclass="form-control" />
+                              </td>
+                              <td>
+                                <input name="quota" ng-model="squadra.newCentro.originalObject.quota"class="form-control" type="number">
+                                <a ng-click="inserisci(squadra,squadra.newCentro,3)">V</a>
+                              </td>
+                          </tr>
+                          <!-- end CENTROCAMPISTI -->
+                          <tr><td colspan="2"></td></tr>
+
+                          <tr ng-repeat="giocatore in squadra.attaccanti">
+                              <td>
+                                <a ng-click="elimina(squadra,$index)" ng-show="isAccessEnable(1)">x</a>
+                                {{giocatore.nome}} {{giocatore.cognome}}
+                              </td>
+                              <td>{{giocatore.quota}}</td>
+                          </tr>
+                          <tr ng-show="isAccessEnable(1)">
+                              <td>
+                                <angucomplete id="ex1"
+                                  placeholder="Search player"
+                                  pause="100"
+                                  selectedobject="squadra.newAttaccante"
+                                  url="http://localhost:8080/eddyfantacalcio/giocatori/"
+                                  titlefield="nome,cognome"
+                                  minlength="3"
+                                  inputclass="form-control" />
+                              </td>
+                              <td>
+                                <input name="quota" ng-model="squadra.newAttaccante.originalObject.quota"class="form-control" type="number">
+                                <a ng-click="inserisci(squadra,squadra.newAttaccante,4)">V</a>
+                              </td>
+                          </tr>
+
+                          <tr><td> Somma </td><td>{{squadra.somma}}</td> </tr>
+                          <tr ng-show="isAccessEnable(1)">
+                            <td colspan="2"><button class="btn btn-success btn-block" type="submit" ng-disable="myForm_{{squadra.nome}}.$invalid">Salva</button></td>
+                          </tr>
+
+                      </tbody>
+                  </table>
+                </form>
+              </div>
+            </div>
+        </div>
+
+      </div>
+
+
+
+  </div>

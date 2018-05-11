@@ -1,0 +1,133 @@
+<style>
+  tr.Red { background-color: lightcoral; }
+</style>
+
+<div id="page-wrapper" ng-controller="gironiCtrl">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Formazioni</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+
+    <!-- /.row -->
+    <div class="row" ng-hide="selectedPartita">
+
+      <div class="col-md-8 text-center">
+          <div class="panel panel-default">
+              <div class="panel-body">
+                <p><a ng-repeat="competizione in competizioni" ng-click="getPartite(competizione,giornata)"
+                  class="btn" ng-class="getGironeClass(competizione)">{{competizione.nome}}</a></p>
+
+                  <p><input ng-model="giornata" type="number" max="38" min="1" /><p>
+              </div>
+          </div>
+      </div>
+
+      <div class="col-md-8 text-center" ng-show="partite">
+          <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-striped">
+                        <thead>
+                            <tr>
+                                <th>Casa</th>
+                                <th>Trasferta</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="partita in partite">
+                                <td>{{partita.formCasa.squadra.nome}}</td>
+                                <td>{{partita.formFuori.squadra.nome}}</td>
+                                <td>{{partita.formCasa.risultato}} : {{partita.formFuori.risultato}}</td>
+                                <td> <a ng-click="detailPartita(partita)" class="btn btn-primary">vedi</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+              </div>
+          </div>
+      </div>
+            <!-- /.panel .chat-panel -->
+      </div>
+
+      <div class="row" ng-show="selectedPartita">
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <a ng-click="tornaFormazioni()" class="btn btn-primary">< Formazioni</a>
+
+                <div class="panel-body">
+                  <!-- formazione Casa -->
+                  <div class="col-md-4">
+
+                    <div> {{selectedPartita.formCasa.squadra.nome}} </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Voto</th>
+                                    <th>Assist</th>
+                                    <th>Goal</th>
+                                    <th>Giocatore</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="schieramento in selectedPartita.formCasa.giocatori | range:1:11">
+                                  <td>{{schieramento.voto}}</td>
+                                  <td>{{schieramento.assist}}</td>
+                                  <td>{{schieramento.goal}}</td>
+                                  <td>
+                                    {{schieramento.giocatore.cognome}} {{schieramento.giocatore.nome[0]}}
+                                  </td>
+                                </tr>
+
+                                <tr> <td></td> </tr>
+
+                                <tr ng-repeat="schieramento in selectedPartita.formCasa.giocatori | range:12:7">
+                                  <td>{{schieramento.voto}}</td>
+                                  <td>{{schieramento.assist}}</td>
+                                  <td>{{schieramento.goal}}</td>
+                                  <td>
+                                    {{schieramento.giocatore.cognome}} {{schieramento.giocatore.nome[0]}}
+                                  </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                  </div>
+
+
+                  <!-- formazione Trasferta -->
+                  <div class="col-md-4">
+
+                    <div> {{selectedPartita.formFuori.squadra.nome}} </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead>
+                                <tr>
+                                  <th>Giocatore</th>
+                                  <th>Voto</th>
+                                </tr>
+                            </thead>
+                            <tbody><!--
+                                <tr ng-repeat="giocatore in formCasa.giocatori">
+                                    <td>{{partita.squadraCasa.nome}}</td>
+                                    <td>{{partita.squadraFuori.nome}}</td>
+                                    <td>{{partita.goalCasa}} : {{partita.goalFuori}}</td>
+                                    <td> <a ng-click="detailPartita(partita)" class="btn btn-primary">vedi</a></td>
+                                </tr>-->
+                            </tbody>
+                        </table>
+                    </div>
+
+                  </div>
+                </div>
+            </div>
+          </div>
+        <!-- /.col-lg-4 -->
+    </div>

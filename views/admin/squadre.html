@@ -1,0 +1,81 @@
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Squadre</h1>
+        </div>
+
+        <div ng-controller="squadreCtrl">
+
+          <table class="table table-striped table-bordered">
+            <tr><th>Name</th><th></th></tr>
+            <tr ng-repeat="squadra in squadre">
+              <td>{{squadra.nome}}</td>
+              <td>
+                <button ng-click="selectSquadra(squadra)" class="btn btn-xs btn-primary">
+                  Details
+                </button>
+              </td>
+            </tr>
+          </table>
+
+          <div class="input-group">
+            <input class="form-control" ng-model="squadra.nome"/>
+            <span class="input-group-btn">
+              <button
+                ng-click="createSquadra(squadra)"
+                class="btn btn-xs btn-primary">Add</button>
+            </span>
+          </div>
+
+          <div ng-show="selectedSquadra">
+            <h3>Squadre Details</h3>
+
+            <div class="col-lg-8">
+              <table class="table table-striped table-bordered">
+                <tr><th>Name</th><th>Count</th><th>Price</th></tr>
+                <tr ng-repeat="proprietario in selectedSquadra.proprietari">
+                  <td>{{proprietario.nome}}</td>
+                  <td>{{proprietario.cognome}}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="panel panel-primary">
+                <div class="panel-heading"> Partecipazioni </div>
+
+                <div class="panel-body">
+
+                  <table class="table table-striped table-bordered">
+                    <tr><th>Competizione</th></tr>
+                    <tr ng-repeat="partecipazione in selectedSquadra.partecipazioni">
+                      <td>{{partecipazione.competizione.nome}}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <angucomplete id="ex1"
+                          placeholder="Competizione"
+                          pause="100"
+                          selectedobject="newPartecipazione"
+                          localdata="competizioni"
+                          searchfields="nome"
+                          titlefield="nome"
+                          minlength="0"
+                          inputclass="form-control form-control-small" />
+
+                      </td>
+                    </tr>
+
+                  </table>
+                  <button class="btn btn-success btn-block" ng-click="addPartecipazione(newPartecipazione.originalObject,selectedSquadra)">invia</button>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+    </div>
+
+  </div>
